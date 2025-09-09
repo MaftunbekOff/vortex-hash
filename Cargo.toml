@@ -14,15 +14,15 @@ homepage = "https://vortexhash.org"
 publish = true
 
 [dependencies]
-zeroize = { workspace = true }
-zeroize_derive = { workspace = true }
-rand = { workspace = true, default-features = false, features = ["std"] }
-sha2 = { workspace = true, default-features = false, features = ["std"] }
+zeroize = "1.8"
+zeroize_derive = "1.5"
+rand = { version = "0.8", default-features = false, features = ["std"] }
+sha2 = { version = "0.10", default-features = false, features = ["std"] }
 siphasher = { version = "0.3", default-features = false }
 xxhash-rust = { version = "0.8", default-features = false }
 hmac = { version = "0.12", default-features = false, features = ["std"] }
 subtle = "2.5"
-md5 = { workspace = true, default-features = false, features = ["std"] }
+md5 = { version = "0.7", default-features = false, features = ["std"] }
 sha1 = { version = "0.10", default-features = false }
 rayon = "1.8"
 
