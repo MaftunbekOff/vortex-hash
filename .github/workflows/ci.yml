@@ -31,11 +31,12 @@ jobs:
     - name: Run benchmarks
       run: cargo bench --no-run
     
+    - name: Install tarpaulin
+      run: cargo install cargo-tarpaulin
+      
     - name: Run tarpaulin
-      uses: Philipp1709/tarpaulin-action@v2
-      with:
-        args: --ignore-tests --out Html
-    
+      run: cargo tarpaulin --ignore-tests --out Html
+      
     - name: Upload coverage
       uses: actions/upload-artifact@v4
       with:

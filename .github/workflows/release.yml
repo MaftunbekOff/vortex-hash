@@ -68,76 +68,66 @@ jobs:
 
       - name: Package source distribution
         run: |
-          tar -czf vortex_hash-${{ github.ref_tags }}.tar.gz \
+          tar -czf vortex_hash-${{ github.ref_name }}.tar.gz \
             --exclude='target' \
             --exclude='.git' \
             --exclude='*.swp' \
             --exclude='*~' \
             --exclude='.*' \
-            --transform 's|^|vortex_hash-${{ github.ref_tags }}-source/|' \
+            --transform 's|^|vortex_hash-${{ github.ref_name }}-source/|' \
             --show-transformed-names \
             .
 
       - name: Package documentation
         run: |
-          tar -czf vortex_hash-docs-${{ github.ref_tags }}.tar.gz \
-            --transform 's|^target/doc/|vortex_hash-docs-${{ github.ref_tags }}/|' \
+          tar -czf vortex_hash-docs-${{ github.ref_name }}.tar.gz \
+            --transform 's|^target/doc/|vortex_hash-docs-${{ github.ref_name }}/|' \
             target/doc/
 
       - name: Package examples
         run: |
           mkdir -p release-examples
           cp examples/*.rs release-examples/
-          tar -czf vortex_hash-examples-${{ github.ref_tags }}.tar.gz \
-            --transform 's|^release-examples/|vortex_hash-examples-${{ github.ref_tags }}/|' \
+          tar -czf vortex_hash-examples-${{ github.ref_name }}.tar.gz \
+            --transform 's|^release-examples/|vortex_hash-examples-${{ github.ref_name }}/|' \
             release-examples/
 
-      - name: Create release notes from CHANGELOG
-        id: create_release_notes
+      - name: Create default release notes
         run: |
-          TAG=${{ github.ref_name }}
-          # Extract section from CHANGELOG.md
-          awk "/## \[$TAG\]/,/^## \[$TAG.*\]/ {flag=1; next} flag && /^## / {flag=0} flag" CHANGELOG.md > release-notes.md
-          
-          if [ ! -s release-notes.md ]; then
-            # Fallback to latest unreleased section
-            awk "/## \[Unreleased\]/,/^## \[Unreleased.*\]/ {flag=1; next} flag && /^## / {flag=0} flag" CHANGELOG.md > release-notes.md
-          fi
-          
-          if [ ! -s release-notes.md ]; then
-            cat > release-notes.md << EOF
-# VortexHash $TAG Release
-
-## Summary
-This release provides the VortexHash cryptographic hash function with quantum-resistant security and high performance.
-
-## Key Features
-- Quantum-resistant hash construction
-- Hardware acceleration support (SIMD, GPU)
-- Constant-time operations for side-channel resistance
-- Comprehensive benchmarking framework
-- Cross-platform compatibility
-
-## Installation
-\`\`\`toml
-[dependencies]
-vortex_hash = "$TAG"
-
-[features]
-default = ["std"]
-simd = []
-hardware = []
-quantum = []
-\`\`\`
-
-## Usage
-See README.md for complete documentation and examples.
-
-## Security
-External cryptanalysis recommended before production use.
-Report issues to security@vortexhash.org
-EOF
-          fi
+          cat > release-notes.md << 'EOF'
+        # VortexHash ${{ github.ref_name }} Release
+        
+        ## Summary
+        This release provides the VortexHash cryptographic hash function with quantum-resistant security and high performance.
+        
+        ## Key Features
+        - Quantum-resistant hash construction
+        - Hardware acceleration support (SIMD, GPU)
+        - Constant-time operations for side-channel resistance
+        - Comprehensive benchmarking framework
+        - Cross-platform compatibility
+        
+        ## Installation
+        ```toml
+        # DEBUG: Line 111-120: Checking indentation in TOML block
+        [dependencies]
+          vortex_hash = "${{ github.ref_name }}"
+        
+        [features]
+          default = ["std"]
+          simd = []
+          hardware = []
+          quantum = []
+        # DEBUG: End of TOML block - indentation should align under keys
+        ```
+        
+        ## Usage
+        See README.md for complete documentation and examples.
+        
+        ## Security
+        External cryptanalysis recommended before production use.
+        Report issues to security@vortexhash.org
+        EOF
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -153,7 +143,7 @@ EOF
       - name: Publish to crates.io
         if: startsWith(github.ref, 'v') && github.event_name == 'push'
         run: |
-          cargo publish --token ${{ secrets.CRATES_IO_TOKEN }} --allow-dirty
+            cargo publish --token ${{ secrets.CRATES_IO_TOKEN }} --allow-dirty
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
 
@@ -162,32 +152,4 @@ EOF
         uses: 8398a7/action-slack@v3
         with:
           status: success
-          fields: repo,message,commit,author,action,eventName,ref,workflow
-          text: |
-            🎉 VortexHash v${{ github.ref_name }} released successfully!
-            
-            📦 Artifacts published to GitHub Releases
-            📚 Documentation available at docs.rs
-            🔖 Tag: ${{ github.ref_name }}
-            📊 Performance validated
-            🛡️ Security checks passed
-            
-            🚀 Ready for production integration!
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Security alert on failure
-        if: failure()
-        uses: 8398a7/action-slack@v3
-        with:
-          status: failure
-          fields: repo,message,commit,author,action,eventName,ref,workflow
-          text: |
-            🚨 Release FAILED for VortexHash v${{ github.ref_name }}
-            
-            📋 Check: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            🔧 Manual intervention required
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          fields: repo,message,commit,author,action,eventName,
