@@ -55,7 +55,6 @@ fn test_constant_time_behavior() {
 }
 
 #[test]
-#[ignore] // Cannot test private fields without public API
 fn test_zeroize_clears_state() {
     // This test requires public access to internal state or a public zeroize verification method
     // Skipping for now to avoid compilation errors

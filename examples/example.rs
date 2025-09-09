@@ -25,7 +25,7 @@ fn main() {
     // Constant time equality
     use vortex_hash::constant_time::ct_eq;
     let eq = ct_eq(&basic_hash, &secure_hash);
-    println!("Constant time equality: {}", bool::from(eq));
+    println!("Constant time equality: {}", eq);
 }
 
 #[cfg(test)]

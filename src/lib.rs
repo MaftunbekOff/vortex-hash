@@ -174,7 +174,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore] // Temporarily disabled due to HMAC changes affecting secure hash
     fn test_legacy_compatibility() {
         let data = b"test";
         let hash1 = hash(data);
