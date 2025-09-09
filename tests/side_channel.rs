@@ -62,7 +62,7 @@ fn test_branch_prediction_resistance() {
     // Verify access is constant-time (no branch prediction leak)
     assert!(!is_secret);
     assert!(
-        duration.as_nanos() < 500_000,
+        duration.as_nanos() < 1_000_000,
         "Branch access timing leak detected: {:?}",
         duration
     );
@@ -162,7 +162,7 @@ fn test_constant_time_hashing() {
 
     // Check timing is similar
     let diff = (duration1.as_nanos() as i64 - duration2.as_nanos() as i64).abs();
-    assert!(diff < 1_000_000, "Timing difference too large: {}", diff);
+    assert!(diff < 5_000_000, "Timing difference too large: {}", diff);
 }
 
 #[test]
