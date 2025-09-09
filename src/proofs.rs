@@ -2,7 +2,7 @@
 
 use crate::hash;
 use crate::hash_secure;
-use crate::hmac;
+use crate::VortexHash;
 use crate::SecurityConfig;
 use crate::ct_eq;
 
@@ -27,7 +27,7 @@ fn test_hash_length() {
 fn test_hmac_integrity() {
     let key = b"test_key";
     let data = b"test_data";
-    let hmac1 = hmac(key, data);
+    let hmac1 = VortexHash::hmac(key, data);
     let mut combined = Vec::new();
     combined.extend_from_slice(key);
     combined.extend_from_slice(data);
