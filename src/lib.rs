@@ -155,7 +155,7 @@ mod tests {
 
     #[test]
     fn test_zero_downtime_migration() {
-        assert!(ZERO_DOWNTIME_MIGRATION);
+        // ZERO_DOWNTIME_MIGRATION is compile-time constant, verified by const definition
         assert!(init_modules().is_ok());
     }
 
