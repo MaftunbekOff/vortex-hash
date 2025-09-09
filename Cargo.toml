@@ -16,30 +16,33 @@ publish = true
 [dependencies]
 zeroize = { workspace = true }
 zeroize_derive = { workspace = true }
-rand = { workspace = true }
-sha2 = { workspace = true }
-siphasher = "0.3"
-xxhash-rust = "0.8"
-hmac = "0.12"
+rand = { workspace = true, default-features = false, features = ["std"] }
+sha2 = { workspace = true, default-features = false, features = ["std"] }
+siphasher = { version = "0.3", default-features = false }
+xxhash-rust = { version = "0.8", default-features = false }
+hmac = { version = "0.12", default-features = false, features = ["std"] }
 subtle = "2.5"
-md5 = { workspace = true }
-sha1 = "0.10"
+md5 = { workspace = true, default-features = false, features = ["std"] }
+sha1 = { version = "0.10", default-features = false }
 rayon = "1.8"
 
 [features]
 default = ["std"]
 std = []
-simd = []            # SIMD optimizations (AVX2, NEON)
-cuda = []            # NVIDIA CUDA GPU acceleration
-vulkan = []          # Cross-platform GPU acceleration
-quantum = []         # Quantum-resistant modes
+no_std = []          # No standard library support
+simd = ["std"]       # SIMD optimizations (AVX2, NEON)
+cuda = ["std"]       # NVIDIA CUDA GPU acceleration
+vulkan = ["std"]     # Cross-platform GPU acceleration
+quantum = []         # Quantum-resistant modes (includes proofs)
 hardware = []        # Hardware acceleration features
+proofs = ["quantum"] # Formal proofs and verification
 constant_time = []   # Side-channel protection
 side_channel_protected = [] # Enhanced side-channel resistance
 experimental = []    # Experimental features
 security_hardened = [] # Maximum security configuration
 memory_safe = []     # Additional memory safety checks
-formal_verified = [] # Formal verification support
+legacy_api = []      # Legacy API compatibility
+formal_verified = ["proofs"] # Formal verification support
 
 [dev-dependencies]
 criterion = "0.5"

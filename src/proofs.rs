@@ -1,6 +1,4 @@
 
-use crate::core::{VortexHash, SecurityConfig};
-use subtle::ConstantTimeEq;
 
 // Formal verification properties for VortexHash
 
@@ -24,10 +22,10 @@ fn test_hmac_integrity() {
     let key = b"test_key";
     let data = b"test_data";
     let hmac1 = VortexHash::hmac(key, data);
-    let config = SecurityConfig::default();
     let mut combined = Vec::new();
     combined.extend_from_slice(key);
     combined.extend_from_slice(data);
+    let config = SecurityConfig::default();
     let secure_hash = VortexHash::hash_secure(&combined, &config);
     // Basic integrity check (full HMAC proof would use formal tools)
     assert_eq!(hmac1.len(), 32, "HMAC must be 32 bytes");
@@ -37,11 +35,12 @@ fn test_hmac_integrity() {
 fn test_constant_time_behavior() {
     let data1 = b"data1";
     let data2 = b"data2";
-    let hash1 = VortexHash::hash_secure(data1, &SecurityConfig::default());
-    let hash2 = VortexHash::hash_secure(data2, &SecurityConfig::default());
+    let config = SecurityConfig::default();
+    let hash1 = VortexHash::hash_secure(data1, &config);
+    let hash2 = VortexHash::hash_secure(data2, &config);
     
     // Constant-time equality check
-    let eq = crate::constant_time::ct_eq(&hash1, &hash2);
+    let eq = ct_eq(&hash1, &hash2);
     assert_eq!(bool::from(eq), (hash1 == hash2), "Constant-time equality must match regular equality");
 }
 
@@ -70,6 +69,7 @@ fn verify_constant_time_properties() {
     let config = SecurityConfig::default();
     let data = b"constant time test";
     
+    let config = SecurityConfig::default();
     let secure_hash = VortexHash::hash_secure(data, &config);
     let basic_hash = VortexHash::hash(data);
     

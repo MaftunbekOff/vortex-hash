@@ -9,6 +9,12 @@ pub struct SecurityConfig {
 }
 
 impl SecurityConfig {
+    pub fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl SecurityConfig {
     #[inline(always)]
     pub fn new() -> Self {
         Self {

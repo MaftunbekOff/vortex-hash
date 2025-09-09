@@ -1,4 +1,6 @@
 pub mod core;
+pub mod constant_time;
+pub mod security;
 pub mod hardware;
 pub mod enterprise;
 pub mod utilities;
@@ -9,13 +11,18 @@ pub mod compatibility;
 pub mod migration;
 pub mod fallback;
 
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+
+#[cfg(feature = "std")]
+use std::string::String;
+
 pub use core::VortexHash;
-pub use core::SecurityConfig;
-pub use core::constant_time;
+pub use constant_time::*;
+pub use security::SecurityConfig;
 pub use hardware::*;
 pub use enterprise::*;
 pub use utilities::*;
-pub use proofs::*;
 pub use ecosystem::*;
 
 pub use compatibility::UniversalHash;
@@ -27,37 +34,44 @@ pub use core::VortexHash as VortexHashLegacy;
 
 #[inline(always)]
 pub fn hash(data: &[u8]) -> [u8; 32] {
-    let default_config = core::SecurityConfig::default();
+    let default_config = SecurityConfig::default();
     hash_secure(data, &default_config)
 }
 
 #[inline(always)]
-pub fn hash_secure(data: &[u8], config: &core::SecurityConfig) -> [u8; 32] {
-    core::VortexHash::hash_secure(data, config)
+pub fn hash_secure(data: &[u8], config: &SecurityConfig) -> [u8; 32] {
+    core::hash_secure(data, config)
 }
 
 #[inline(always)]
 pub fn hash_constant_time(data: &[u8]) -> [u8; 32] {
-    use core::constant_time::ct_eq;
-    let secure_config = core::SecurityConfig::default();
-    let secure_hash = core::VortexHash::hash_secure(data, &secure_config);
+    use crate::constant_time::ct_eq;
+    let secure_config = SecurityConfig::default();
+    let secure_hash = hash_secure(data, &secure_config);
     let validation = ct_eq(&secure_hash, &[0u8; 32]);
     if bool::from(validation) {
         secure_hash
     } else {
-        core::VortexHash::hash(data)
+        hash(data)
     }
 }
 
 #[inline(always)]
 pub fn hash_ultra_optimized(data: &[u8]) -> [u8; 32] {
-    hardware::UltraPerformance::hash_ultra_optimized(data)
+    crate::hardware::UltraPerformance::hash_ultra_optimized(data)
 }
 
+#[cfg(feature = "std")]
 pub const MODULE_VERSION: &str = env!("CARGO_PKG_VERSION");
+#[cfg(not(feature = "std"))]
+pub const MODULE_VERSION: &str = "0.1.0";
+
 pub const MODULE_COUNT: usize = 10;
 pub const ZERO_DOWNTIME_MIGRATION: bool = true;
+#[cfg(feature = "std")]
 pub const PERFORMANCE_IMPACT: f64 = 0.0;
+#[cfg(not(feature = "std"))]
+pub const PERFORMANCE_IMPACT: f64 = 0.0; // Placeholder for no_std
 pub const UNIVERSAL_COMPATIBILITY: bool = true;
 
 pub fn health_check() -> ModuleHealth {
@@ -73,7 +87,10 @@ pub fn health_check() -> ModuleHealth {
         migration_module: true,
         fallback_module: true,
         total_modules: MODULE_COUNT,
+        #[cfg(feature = "std")]
         migration_status: "Zero-downtime complete".to_string(),
+        #[cfg(not(feature = "std"))]
+        migration_status: alloc::format!("Zero-downtime complete"), // Use alloc for no_std
         performance_impact: PERFORMANCE_IMPACT,
         universal_compatibility: UNIVERSAL_COMPATIBILITY,
     }
@@ -98,11 +115,20 @@ pub struct ModuleHealth {
 }
 
 impl ModuleHealth {
+    #[cfg(feature = "std")]
     pub fn is_healthy(&self) -> bool {
         self.core_module && self.security_module && self.hardware_module &&
         self.enterprise_module && self.utilities_module && self.proofs_module &&
         self.ecosystem_module && self.compatibility_module && self.migration_module &&
         self.fallback_module && self.performance_impact < 0.1 && self.universal_compatibility
+    }
+
+    #[cfg(not(feature = "std"))]
+    pub fn is_healthy(&self) -> bool {
+        self.core_module && self.security_module && self.hardware_module &&
+        self.enterprise_module && self.utilities_module && self.proofs_module &&
+        self.ecosystem_module && self.compatibility_module && self.migration_module &&
+        self.fallback_module && self.universal_compatibility
     }
 }
 
