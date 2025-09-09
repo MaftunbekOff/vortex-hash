@@ -46,7 +46,7 @@ jobs:
 
       - name: Run performance benchmarks
         run: |
-          cargo bench --no-run --features "simd hardware"
+          cargo bench --features "simd hardware"
 
       - name: Generate API documentation
         run: |
@@ -64,7 +64,7 @@ jobs:
       - name: Build release binaries
         run: |
           cargo build --release --features "std simd hardware"
-          cargo build --release --no-default-features --features "no-std simd"
+          cargo build --release --no-default-features --features "no_std"
 
       - name: Package source distribution
         run: |
