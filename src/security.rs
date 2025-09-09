@@ -8,7 +8,6 @@ pub struct SecurityConfig {
     pub side_channel_protection: bool,
 }
 
-
 impl SecurityConfig {
     #[inline(always)]
     pub fn new() -> Self {

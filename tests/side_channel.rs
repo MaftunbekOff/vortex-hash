@@ -16,7 +16,7 @@ fn test_timing_variation() {
     let start1 = Instant::now();
     let hash1 = VortexHash::hash_secure(data1, &SecurityConfig::default());
     let duration1 = start1.elapsed();
-    
+
     let start2 = Instant::now();
     let hash2 = VortexHash::hash_secure(data2, &SecurityConfig::default());
     let duration2 = start2.elapsed();
