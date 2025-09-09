@@ -386,7 +386,7 @@ mod tests {
 
     #[test]
     fn test_vortex_hash_new() {
-        use crate::{VortexHash, SecurityConfig};
+        use crate::{SecurityConfig, VortexHash};
         let config = SecurityConfig::default();
         let mut hasher = VortexHash::new(&config);
         hasher.absorb(b"test data");
