@@ -26,10 +26,10 @@ jobs:
         toolchain: ${{ matrix.rust }}
     
     - name: Run tests
-      run: cd vortex_hash && cargo test
+      run: cargo test
     
     - name: Run benchmarks
-      run: cd vortex_hash && cargo bench --no-run
+      run: cargo bench --no-run
     
     - name: Run tarpaulin
       uses: actions-rs/tarpaulin@v0.1
@@ -40,7 +40,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: coverage-${{ matrix.os }}-${{ matrix.rust }}
-        path: vortex_hash/tarpaulin-report.html
+        path: tarpaulin-report.html
 
   clippy:
     runs-on: ubuntu-latest
@@ -53,7 +53,7 @@ jobs:
         components: clippy
     
     - name: Run Clippy
-      run: cd vortex_hash && cargo clippy --all-targets --all-features -- -D warnings
+      run: cargo clippy --all-targets --all-features -- -D warnings
     
     - name: Run Clippy on quantum_link
       run: cd quantum_link && cargo clippy --all-targets --all-features -- -D warnings
@@ -69,7 +69,7 @@ jobs:
         components: rustfmt
     
     - name: Run fmt check
-      run: cd vortex_hash && cargo fmt -- --check
+      run: cargo fmt -- --check
       continue-on-error: true
     
     - name: Run fmt check on quantum_link
