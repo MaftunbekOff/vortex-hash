@@ -1,0 +1,60 @@
+[package]
+name = "vortex_hash"
+version = "0.1.0"
+edition = "2021"
+authors = ["VortexHash Developers <security@vortexhash.org>"]
+description = "Quantum-resistant cryptographic hash function with GPU acceleration and constant-time operations"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/your-org/vortex_hash"
+keywords = ["crypto", "hash", "quantum-resistant", "gpu", "performance", "cryptography"]
+categories = ["cryptography", "no-std"]
+readme = "README.md"
+documentation = "https://docs.rs/vortex_hash"
+homepage = "https://vortexhash.org"
+publish = true
+
+[dependencies]
+zeroize = { workspace = true }
+zeroize_derive = { workspace = true }
+rand = { workspace = true }
+sha2 = { workspace = true }
+siphasher = "0.3"
+xxhash-rust = "0.8"
+hmac = "0.12"
+subtle = "2.5"
+md5 = { workspace = true }
+sha1 = "0.10"
+rayon = "1.8"
+
+[features]
+default = ["std"]
+std = []
+simd = []            # SIMD optimizations (AVX2, NEON)
+cuda = []            # NVIDIA CUDA GPU acceleration
+vulkan = []          # Cross-platform GPU acceleration
+quantum = []         # Quantum-resistant modes
+hardware = []        # Hardware acceleration features
+constant_time = []   # Side-channel protection
+side_channel_protected = [] # Enhanced side-channel resistance
+experimental = []    # Experimental features
+security_hardened = [] # Maximum security configuration
+memory_safe = []     # Additional memory safety checks
+formal_verified = [] # Formal verification support
+
+[dev-dependencies]
+criterion = "0.5"
+proptest = "1.0"
+cargo-tarpaulin = "0.26"
+
+[[bench]]
+name = "vortex_hash_bench"
+harness = false
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+opt-level = 3
+
+[profile.dev]
+opt-level = 1

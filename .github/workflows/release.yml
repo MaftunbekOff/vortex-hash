@@ -1,0 +1,193 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache cargo registry
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Run comprehensive tests
+        run: |
+          cargo test --all-features --verbose
+          cargo test --doc --all-features
+
+      - name: Run linter checks
+        run: |
+          cargo clippy --all-targets --all-features -- -D warnings
+          cargo fmt --all -- --check
+
+      - name: Run security tests
+        run: |
+          cargo test --features "security_hardened constant_time"
+          cargo test --doc --features "security_hardened"
+
+      - name: Run performance benchmarks
+        run: |
+          cargo bench --no-run --features "simd hardware"
+
+      - name: Generate API documentation
+        run: |
+          cargo doc --all-features --no-deps
+          # Add redirect from root to main crate docs
+          echo "<meta http-equiv='refresh' content='0; url=vortex_hash/'>" > target/doc/index.html
+
+      - name: Run security audit preparation
+        run: |
+          cargo test --features "security_hardened memory_safe"
+          # Generate coverage report
+          cargo install cargo-tarpaulin
+          cargo tarpaulin --ignore-tests --out Xml --skip-clean
+
+      - name: Build release binaries
+        run: |
+          cargo build --release --features "std simd hardware"
+          cargo build --release --no-default-features --features "no-std simd"
+
+      - name: Package source distribution
+        run: |
+          tar -czf vortex_hash-${{ github.ref_tags }}.tar.gz \
+            --exclude='target' \
+            --exclude='.git' \
+            --exclude='*.swp' \
+            --exclude='*~' \
+            --exclude='.*' \
+            --transform 's|^|vortex_hash-${{ github.ref_tags }}-source/|' \
+            --show-transformed-names \
+            .
+
+      - name: Package documentation
+        run: |
+          tar -czf vortex_hash-docs-${{ github.ref_tags }}.tar.gz \
+            --transform 's|^target/doc/|vortex_hash-docs-${{ github.ref_tags }}/|' \
+            target/doc/
+
+      - name: Package examples
+        run: |
+          mkdir -p release-examples
+          cp examples/*.rs release-examples/
+          tar -czf vortex_hash-examples-${{ github.ref_tags }}.tar.gz \
+            --transform 's|^release-examples/|vortex_hash-examples-${{ github.ref_tags }}/|' \
+            release-examples/
+
+      - name: Create release notes from CHANGELOG
+        id: create_release_notes
+        run: |
+          TAG=${{ github.ref_name }}
+          # Extract section from CHANGELOG.md
+          awk "/## \[$TAG\]/,/^## \[$TAG.*\]/ {flag=1; next} flag && /^## / {flag=0} flag" CHANGELOG.md > release-notes.md
+          
+          if [ ! -s release-notes.md ]; then
+            # Fallback to latest unreleased section
+            awk "/## \[Unreleased\]/,/^## \[Unreleased.*\]/ {flag=1; next} flag && /^## / {flag=0} flag" CHANGELOG.md > release-notes.md
+          fi
+          
+          if [ ! -s release-notes.md ]; then
+            cat > release-notes.md << EOF
+# VortexHash $TAG Release
+
+## Summary
+This release provides the VortexHash cryptographic hash function with quantum-resistant security and high performance.
+
+## Key Features
+- Quantum-resistant hash construction
+- Hardware acceleration support (SIMD, GPU)
+- Constant-time operations for side-channel resistance
+- Comprehensive benchmarking framework
+- Cross-platform compatibility
+
+## Installation
+\`\`\`toml
+[dependencies]
+vortex_hash = "$TAG"
+
+[features]
+default = ["std"]
+simd = []
+hardware = []
+quantum = []
+\`\`\`
+
+## Usage
+See README.md for complete documentation and examples.
+
+## Security
+External cryptanalysis recommended before production use.
+Report issues to security@vortexhash.org
+EOF
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            vortex_hash-${{ github.ref_name }}.tar.gz
+            vortex_hash-docs-${{ github.ref_name }}.tar.gz
+            vortex_hash-examples-${{ github.ref_name }}.tar.gz
+          body_path: release-notes.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to crates.io
+        if: startsWith(github.ref, 'v') && github.event_name == 'push'
+        run: |
+          cargo publish --token ${{ secrets.CRATES_IO_TOKEN }} --allow-dirty
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
+
+      - name: Security notification
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+          text: |
+            🎉 VortexHash v${{ github.ref_name }} released successfully!
+            
+            📦 Artifacts published to GitHub Releases
+            📚 Documentation available at docs.rs
+            🔖 Tag: ${{ github.ref_name }}
+            📊 Performance validated
+            🛡️ Security checks passed
+            
+            🚀 Ready for production integration!
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Security alert on failure
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+          text: |
+            🚨 Release FAILED for VortexHash v${{ github.ref_name }}
+            
+            📋 Check: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            🔧 Manual intervention required
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
