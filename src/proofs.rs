@@ -1,10 +1,10 @@
 #![allow(unused_imports, unused_variables)]
 
+use crate::ct_eq;
 use crate::hash;
 use crate::hash_secure;
 use crate::VortexHash;
 use crate::SecurityConfig;
-use crate::ct_eq;
 
 // Formal verification properties for VortexHash
 

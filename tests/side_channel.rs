@@ -20,7 +20,7 @@ fn test_timing_variation() {
     let start2 = Instant::now();
     let hash2 = VortexHash::hash_secure(data2, &SecurityConfig::default());
     let duration2 = start2.elapsed();
-    
+
     // Check for significant timing differences (should be minimal with constant-time)
     assert!((duration1.as_nanos() as f64 - duration2.as_nanos() as f64).abs() < 100.0,
             "Significant timing difference detected: {:?} vs {:?}", duration1, duration2);
