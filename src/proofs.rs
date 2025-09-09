@@ -1,3 +1,5 @@
+#![allow(unused_imports)]
+
 use crate::ct_eq;
 
 // Formal verification properties for VortexHash
