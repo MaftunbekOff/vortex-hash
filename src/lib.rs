@@ -395,6 +395,37 @@ mod tests {
     }
 
     #[test]
+    fn test_hash_empty_data() {
+        let result = hash(b"");
+        assert_eq!(result.len(), 32);
+    }
+
+    #[test]
+    fn test_hash_secure_empty_data() {
+        let result = hash_secure(b"", &SecurityConfig::default());
+        assert_eq!(result.len(), 32);
+    }
+
+    #[test]
+    fn test_hash_constant_time_empty() {
+        let result = hash_constant_time(b"");
+        assert_eq!(result.len(), 32);
+    }
+
+    #[test]
+    fn test_hash_ultra_optimized_empty() {
+        let result = hash_ultra_optimized(b"");
+        assert_eq!(result.len(), 32);
+    }
+
+    #[test]
+    fn test_module_health_display() {
+        let health = health_check();
+        let display = format!("{:?}", health);
+        assert!(display.contains("ModuleHealth"));
+    }
+
+    #[test]
     fn test_ecosystem_config_default() {
         use crate::ecosystem::EcosystemConfig;
         let config = EcosystemConfig::default();
