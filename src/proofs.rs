@@ -1,3 +1,6 @@
+use crate::VortexHash;
+use crate::SecurityConfig;
+use crate::utilities::constant_time::ct_eq;
 
 
 // Formal verification properties for VortexHash
