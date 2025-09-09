@@ -1,5 +1,9 @@
 #![allow(unused_imports)]
 
+use crate::hash;
+use crate::hash_secure;
+use crate::hmac;
+use crate::SecurityConfig;
 use crate::ct_eq;
 
 // Formal verification properties for VortexHash
@@ -15,8 +19,8 @@ fn test_hash_determinism() {
 #[test]
 fn test_hash_length() {
     let data = b"length test";
-    let hash = hash(data);
-    assert_eq!(hash.len(), 32, "Hash must be 32 bytes");
+    let hash_result = hash(data);
+    assert_eq!(hash_result.len(), 32, "Hash must be 32 bytes");
 }
 
 #[test]
