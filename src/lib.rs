@@ -265,4 +265,165 @@ mod tests {
         let hash2 = VortexHash::hash(data);
         assert_eq!(hash1, hash2);
     }
+
+    #[test]
+    fn test_universal_hash_compatible() {
+        use crate::compatibility::UniversalHash;
+        let data = b"compatibility test";
+        let result = UniversalHash::hash_compatible(data);
+        assert_eq!(result.len(), 32);
+    }
+
+    #[test]
+    fn test_legacy_compatibility_check() {
+        use crate::compatibility::legacy_compatibility_check;
+        assert!(legacy_compatibility_check());
+    }
+
+    #[test]
+    fn test_fallback_hash() {
+        use crate::fallback::FallbackHash;
+        let data = b"fallback test";
+        let result = FallbackHash::hash_fallback(data);
+        assert_eq!(result.len(), 32);
+    }
+
+    #[test]
+    fn test_is_fallback_needed() {
+        use crate::fallback::is_fallback_needed;
+        assert!(!is_fallback_needed());
+    }
+
+    #[test]
+    fn test_ultra_performance_hash() {
+        use crate::hardware::UltraPerformance;
+        let data = b"ultra test";
+        let result = UltraPerformance::hash_ultra_optimized(data);
+        assert_eq!(result.len(), 32);
+    }
+
+    #[test]
+    fn test_simd_initialize() {
+        use crate::hardware::simd::initialize_simd;
+        initialize_simd(); // Just call it
+    }
+
+    #[test]
+    fn test_cuda_init() {
+        use crate::hardware::cuda::init_cuda;
+        assert!(init_cuda().is_ok());
+    }
+
+    #[test]
+    fn test_vulkan_init() {
+        use crate::hardware::vulkan::init_vulkan;
+        assert!(init_vulkan().is_ok());
+    }
+
+    #[test]
+    fn test_migration_helper() {
+        use crate::migration::MigrationHelper;
+        let data = b"migrate test";
+        let result = MigrationHelper::migrate_from_legacy(data);
+        assert_eq!(result.len(), 32);
+    }
+
+    #[test]
+    fn test_is_migration_needed() {
+        use crate::migration::is_migration_needed;
+        assert!(!is_migration_needed());
+    }
+
+    #[test]
+    fn test_security_config_new() {
+        use crate::SecurityConfig;
+        let config = SecurityConfig::new();
+        assert_eq!(config.rounds, 64);
+        assert_eq!(config.security_level, 256);
+        assert!(config.constant_time);
+        assert!(config.side_channel_protection);
+    }
+
+    #[test]
+    fn test_security_config_validate() {
+        use crate::SecurityConfig;
+        let config = SecurityConfig::new();
+        assert!(config.validate());
+    }
+
+    #[test]
+    fn test_security_config_display() {
+        use crate::SecurityConfig;
+        let config = SecurityConfig::new();
+        let display = format!("{}", config);
+        assert!(display.contains("SecurityConfig"));
+    }
+
+    #[test]
+    fn test_utils_hash() {
+        use crate::utils_hash;
+        let data = b"utils test";
+        let result = utils_hash(data);
+        assert_eq!(result.len(), 32);
+    }
+
+    #[test]
+    fn test_validate_input() {
+        use crate::validate_input;
+        assert!(validate_input(b"test"));
+        assert!(!validate_input(b""));
+    }
+
+    #[test]
+    fn test_constant_time_ct_eq() {
+        use crate::utilities::constant_time::ct_eq;
+        let a = b"test";
+        let b = b"test";
+        let c = b"different";
+        assert!(ct_eq(a, b));
+        assert!(!ct_eq(a, c));
+    }
+
+    #[test]
+    fn test_vortex_hash_new() {
+        use crate::{VortexHash, SecurityConfig};
+        let config = SecurityConfig::default();
+        let mut hasher = VortexHash::new(&config);
+        hasher.absorb(b"test data");
+        let result = hasher.squeeze();
+        assert_eq!(result.len(), 32);
+    }
+
+    #[test]
+    fn test_ecosystem_config_default() {
+        use crate::ecosystem::EcosystemConfig;
+        let config = EcosystemConfig::default();
+        assert_eq!(config.integration_level, 1);
+    }
+
+    #[test]
+    fn test_ecosystem_compatibility_check() {
+        use crate::ecosystem::ecosystem_compatibility_check;
+        assert!(ecosystem_compatibility_check());
+    }
+
+    #[test]
+    fn test_get_ecosystem_version() {
+        use crate::ecosystem::get_ecosystem_version;
+        assert_eq!(get_ecosystem_version(), "1.0.0");
+    }
+
+    #[test]
+    fn test_enterprise_config_default() {
+        use crate::enterprise::EnterpriseConfig;
+        let config = EnterpriseConfig::default();
+        assert!(config.logging_enabled);
+        assert!(config.metrics_enabled);
+    }
+
+    #[test]
+    fn test_enterprise_init() {
+        use crate::enterprise::enterprise_init;
+        enterprise_init(); // Just call it
+    }
 }

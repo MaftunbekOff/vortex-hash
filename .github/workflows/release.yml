@@ -109,16 +109,14 @@ jobs:
            
            ## Installation
            ```toml
-           # DEBUG: Line 111-120: Checking indentation in TOML block
            [dependencies]
              vortex_hash = "${{ github.ref_name }}"
-           
+
            [features]
              default = ["std"]
              simd = []
              hardware = []
              quantum = []
-           # DEBUG: End of TOML block - indentation should align under keys
            ```
            
            ## Usage
