@@ -1,4 +1,4 @@
-use crate::utilities::constant_time::ct_eq;
+use crate::constant_time::ct_eq;
 
 // Formal verification properties for VortexHash
 
