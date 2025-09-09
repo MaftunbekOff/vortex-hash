@@ -15,7 +15,7 @@ publish = true
 
 [dependencies]
 zeroize = "1.8"
-zeroize_derive = "1.5"
+zeroize_derive = "1.4.2"
 rand = { version = "0.8", default-features = false, features = ["std"] }
 sha2 = { version = "0.10", default-features = false, features = ["std"] }
 siphasher = { version = "0.3", default-features = false }
