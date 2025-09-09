@@ -48,7 +48,7 @@ fn test_constant_time_behavior() {
     // Constant-time equality check
     let eq = ct_eq(&hash1, &hash2);
     assert_eq!(
-        bool::from(eq),
+        eq,
         (hash1 == hash2),
         "Constant-time equality must match regular equality"
     );

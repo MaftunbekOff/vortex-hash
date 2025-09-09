@@ -31,17 +31,51 @@ pub use migration::MigrationHelper;
 #[cfg(feature = "legacy_api")]
 pub use core::VortexHash as VortexHashLegacy;
 
+/// Basic hash function using default security configuration.
+///
+/// # Examples
+///
+/// ```
+/// use vortex_hash::hash;
+///
+/// let data = b"Hello, Vortex!";
+/// let result = hash(data);
+/// assert_eq!(result.len(), 32);
+/// ```
 #[inline(always)]
 pub fn hash(data: &[u8]) -> [u8; 32] {
     let default_config = SecurityConfig::default();
     hash_secure(data, &default_config)
 }
 
+/// Secure hash function with custom security configuration.
+///
+/// # Examples
+///
+/// ```
+/// use vortex_hash::{hash_secure, SecurityConfig};
+///
+/// let data = b"Secure data";
+/// let config = SecurityConfig::default();
+/// let result = hash_secure(data, &config);
+/// assert_eq!(result.len(), 32);
+/// ```
 #[inline(always)]
 pub fn hash_secure(data: &[u8], config: &SecurityConfig) -> [u8; 32] {
     core::hash_secure(data, config)
 }
 
+/// Constant-time hash function for side-channel resistance.
+///
+/// # Examples
+///
+/// ```
+/// use vortex_hash::hash_constant_time;
+///
+/// let data = b"Constant time hash";
+/// let result = hash_constant_time(data);
+/// assert_eq!(result.len(), 32);
+/// ```
 #[inline(always)]
 pub fn hash_constant_time(data: &[u8]) -> [u8; 32] {
     use crate::constant_time::ct_eq;
@@ -55,6 +89,17 @@ pub fn hash_constant_time(data: &[u8]) -> [u8; 32] {
     }
 }
 
+/// Ultra-optimized hash function for high performance.
+///
+/// # Examples
+///
+/// ```
+/// use vortex_hash::hash_ultra_optimized;
+///
+/// let data = b"Ultra fast hash";
+/// let result = hash_ultra_optimized(data);
+/// assert_eq!(result.len(), 32);
+/// ```
 #[inline(always)]
 pub fn hash_ultra_optimized(data: &[u8]) -> [u8; 32] {
     crate::hardware::UltraPerformance::hash_ultra_optimized(data)
@@ -73,6 +118,16 @@ pub const PERFORMANCE_IMPACT: f64 = 0.0;
 pub const PERFORMANCE_IMPACT: f64 = 0.0; // Placeholder for no_std
 pub const UNIVERSAL_COMPATIBILITY: bool = true;
 
+/// Check the health status of all modules.
+///
+/// # Examples
+///
+/// ```
+/// use vortex_hash::health_check;
+///
+/// let health = health_check();
+/// assert!(health.is_healthy());
+/// ```
 pub fn health_check() -> ModuleHealth {
     ModuleHealth {
         core_module: true,
@@ -95,6 +150,16 @@ pub fn health_check() -> ModuleHealth {
     }
 }
 
+/// Health status of all modules.
+///
+/// # Examples
+///
+/// ```
+/// use vortex_hash::health_check;
+///
+/// let health = health_check();
+/// println!("Total modules: {}", health.total_modules);
+/// ```
 #[derive(Debug, Clone)]
 pub struct ModuleHealth {
     pub core_module: bool,
@@ -114,6 +179,16 @@ pub struct ModuleHealth {
 }
 
 impl ModuleHealth {
+    /// Check if all modules are healthy.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use vortex_hash::health_check;
+    ///
+    /// let health = health_check();
+    /// assert!(health.is_healthy());
+    /// ```
     #[cfg(feature = "std")]
     pub fn is_healthy(&self) -> bool {
         self.core_module
@@ -146,6 +221,16 @@ impl ModuleHealth {
     }
 }
 
+/// Initialize all modules and check health.
+///
+/// # Examples
+///
+/// ```
+/// use vortex_hash::init_modules;
+///
+/// let result = init_modules();
+/// assert!(result.is_ok());
+/// ```
 pub fn init_modules() -> Result<(), &'static str> {
     let health = health_check();
     if health.is_healthy() {
