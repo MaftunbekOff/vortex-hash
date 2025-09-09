@@ -48,7 +48,7 @@ pub fn hash_constant_time(data: &[u8]) -> [u8; 32] {
     let secure_config = SecurityConfig::default();
     let secure_hash = hash_secure(data, &secure_config);
     let validation = ct_eq(&secure_hash, &[0u8; 32]);
-    if bool::from(validation) {
+    if validation {
         secure_hash
     } else {
         hash(data)
