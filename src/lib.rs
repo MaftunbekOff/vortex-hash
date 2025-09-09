@@ -1,15 +1,14 @@
 pub mod core;
-pub mod constant_time;
-pub mod security;
-pub mod hardware;
-pub mod enterprise;
-pub mod utilities;
-pub mod proofs;
 pub mod ecosystem;
+pub mod enterprise;
+pub mod hardware;
+pub mod security;
+pub mod utilities;
 
 pub mod compatibility;
-pub mod migration;
 pub mod fallback;
+pub mod migration;
+pub mod proofs;
 
 #[cfg(not(feature = "std"))]
 extern crate alloc;
@@ -17,17 +16,17 @@ extern crate alloc;
 #[cfg(feature = "std")]
 use std::string::String;
 
-pub use core::VortexHash;
 pub use constant_time::*;
-pub use security::SecurityConfig;
-pub use hardware::*;
-pub use enterprise::*;
-pub use utilities::*;
+pub use core::VortexHash;
 pub use ecosystem::*;
+pub use enterprise::*;
+pub use hardware::*;
+pub use security::SecurityConfig;
+pub use utilities::*;
 
 pub use compatibility::UniversalHash;
-pub use migration::MigrationHelper;
 pub use fallback::FallbackHash;
+pub use migration::MigrationHelper;
 
 #[cfg(feature = "legacy_api")]
 pub use core::VortexHash as VortexHashLegacy;
@@ -117,18 +116,33 @@ pub struct ModuleHealth {
 impl ModuleHealth {
     #[cfg(feature = "std")]
     pub fn is_healthy(&self) -> bool {
-        self.core_module && self.security_module && self.hardware_module &&
-        self.enterprise_module && self.utilities_module && self.proofs_module &&
-        self.ecosystem_module && self.compatibility_module && self.migration_module &&
-        self.fallback_module && self.performance_impact < 0.1 && self.universal_compatibility
+        self.core_module
+            && self.security_module
+            && self.hardware_module
+            && self.enterprise_module
+            && self.utilities_module
+            && self.proofs_module
+            && self.ecosystem_module
+            && self.compatibility_module
+            && self.migration_module
+            && self.fallback_module
+            && self.performance_impact < 0.1
+            && self.universal_compatibility
     }
 
     #[cfg(not(feature = "std"))]
     pub fn is_healthy(&self) -> bool {
-        self.core_module && self.security_module && self.hardware_module &&
-        self.enterprise_module && self.utilities_module && self.proofs_module &&
-        self.ecosystem_module && self.compatibility_module && self.migration_module &&
-        self.fallback_module && self.universal_compatibility
+        self.core_module
+            && self.security_module
+            && self.hardware_module
+            && self.enterprise_module
+            && self.utilities_module
+            && self.proofs_module
+            && self.ecosystem_module
+            && self.compatibility_module
+            && self.migration_module
+            && self.fallback_module
+            && self.universal_compatibility
     }
 }
 

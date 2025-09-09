@@ -1,6 +1,6 @@
 //! Utility functions for VortexHash
 
-use sha2::{Sha256, Digest};
+use sha2::{Digest, Sha256};
 
 pub fn utils_hash(data: &[u8]) -> [u8; 32] {
    let mut hasher = Sha256::new();

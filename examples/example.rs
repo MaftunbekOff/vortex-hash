@@ -1,4 +1,4 @@
-use vortex_hash::{VortexHash, SecurityConfig};
+use vortex_hash::{SecurityConfig, VortexHash};
 
 fn main() {
     // Basic hash

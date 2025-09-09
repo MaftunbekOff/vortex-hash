@@ -44,10 +44,14 @@ fn test_constant_time_behavior() {
     let config = SecurityConfig::default();
     let hash1 = hash_secure(data1, &config);
     let hash2 = hash_secure(data2, &config);
-    
+
     // Constant-time equality check
     let eq = ct_eq(&hash1, &hash2);
-    assert_eq!(bool::from(eq), (hash1 == hash2), "Constant-time equality must match regular equality");
+    assert_eq!(
+        bool::from(eq),
+        (hash1 == hash2),
+        "Constant-time equality must match regular equality"
+    );
 }
 
 #[test]
@@ -64,9 +68,12 @@ fn lemma_hash_injective() {
     let data2 = b"data2";
     let hash1 = hash(data1);
     let hash2 = hash(data2);
-    
+
     // Hash is injective for different inputs (basic property)
-    assert_ne!(hash1, hash2, "Different inputs should produce different hashes");
+    assert_ne!(
+        hash1, hash2,
+        "Different inputs should produce different hashes"
+    );
 }
 
 // Constant-time property verification
@@ -74,10 +81,10 @@ fn lemma_hash_injective() {
 fn verify_constant_time_properties() {
     let config = SecurityConfig::default();
     let data = b"constant time test";
-    
+
     let _secure_hash = hash_secure(data, &config);
     let _basic_hash = hash(data);
-    
+
     // Verify secure hash maintains properties
     assert_eq!([0u8; 32].len(), 32); // Placeholder to verify compilation
     assert_ne!([1u8; 32], [0u8; 32]);

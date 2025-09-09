@@ -27,12 +27,13 @@ fn bench_hash_parallel(c: &mut Criterion) {
     let data = vec![0u8; 1024 * 1024]; // 1MB
     let n_threads = rayon::current_num_threads();
     let chunks: Vec<_> = (0..n_threads).map(|_| data.clone()).collect();
-    
+
     c.bench_function("hash_ultra_optimized_parallel", |b| {
         b.iter(|| {
-            chunks.par_iter().map(|chunk| {
-                UltraPerformance::hash_ultra_optimized(black_box(chunk))
-            }).collect::<Vec<_>>()
+            chunks
+                .par_iter()
+                .map(|chunk| UltraPerformance::hash_ultra_optimized(black_box(chunk)))
+                .collect::<Vec<_>>()
         })
     });
 }

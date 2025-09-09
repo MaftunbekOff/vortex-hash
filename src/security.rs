@@ -28,7 +28,10 @@ impl SecurityConfig {
 
 impl fmt::Display for SecurityConfig {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "SecurityConfig(rounds={}, level={}, ct={})", 
-               self.rounds, self.security_level, self.constant_time)
+        write!(
+            f,
+            "SecurityConfig(rounds={}, level={}, ct={})",
+            self.rounds, self.security_level, self.constant_time
+        )
     }
 }

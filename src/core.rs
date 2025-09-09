@@ -38,7 +38,8 @@ impl VortexHash {
 
     fn permute(&mut self) {
         // Simple ARX-based permutation for demonstration
-        for _ in 0..8 { // 8 rounds
+        for _ in 0..8 {
+            // 8 rounds
             for i in 0..64 {
                 self.state[i] = self.state[i].wrapping_add(self.state[(i + 1) % 64]);
                 self.state[i] = self.state[i].rotate_left(13);
