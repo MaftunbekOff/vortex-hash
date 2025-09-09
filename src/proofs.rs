@@ -3,8 +3,8 @@
 use crate::ct_eq;
 use crate::hash;
 use crate::hash_secure;
-use crate::VortexHash;
 use crate::SecurityConfig;
+use crate::VortexHash;
 
 // Formal verification properties for VortexHash
 
