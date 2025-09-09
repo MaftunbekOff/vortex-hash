@@ -95,39 +95,39 @@ jobs:
       - name: Create default release notes
         run: |
           cat > release-notes.md << 'EOF'
-        # VortexHash ${{ github.ref_name }} Release
-        
-        ## Summary
-        This release provides the VortexHash cryptographic hash function with quantum-resistant security and high performance.
-        
-        ## Key Features
-        - Quantum-resistant hash construction
-        - Hardware acceleration support (SIMD, GPU)
-        - Constant-time operations for side-channel resistance
-        - Comprehensive benchmarking framework
-        - Cross-platform compatibility
-        
-        ## Installation
-        ```toml
-        # DEBUG: Line 111-120: Checking indentation in TOML block
-        [dependencies]
-          vortex_hash = "${{ github.ref_name }}"
-        
-        [features]
-          default = ["std"]
-          simd = []
-          hardware = []
-          quantum = []
-        # DEBUG: End of TOML block - indentation should align under keys
-        ```
-        
-        ## Usage
-        See README.md for complete documentation and examples.
-        
-        ## Security
-        External cryptanalysis recommended before production use.
-        Report issues to security@vortexhash.org
-        EOF
+           # VortexHash ${{ github.ref_name }} Release
+           
+           ## Summary
+           This release provides the VortexHash cryptographic hash function with quantum-resistant security and high performance.
+           
+           ## Key Features
+           - Quantum-resistant hash construction
+           - Hardware acceleration support (SIMD, GPU)
+           - Constant-time operations for side-channel resistance
+           - Comprehensive benchmarking framework
+           - Cross-platform compatibility
+           
+           ## Installation
+           ```toml
+           # DEBUG: Line 111-120: Checking indentation in TOML block
+           [dependencies]
+             vortex_hash = "${{ github.ref_name }}"
+           
+           [features]
+             default = ["std"]
+             simd = []
+             hardware = []
+             quantum = []
+           # DEBUG: End of TOML block - indentation should align under keys
+           ```
+           
+           ## Usage
+           See README.md for complete documentation and examples.
+           
+           ## Security
+           External cryptanalysis recommended before production use.
+           Report issues to security@vortexhash.org
+           EOF
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
