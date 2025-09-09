@@ -32,7 +32,7 @@ jobs:
       run: cargo bench --no-run
     
     - name: Run tarpaulin
-      uses: actions-rs/tarpaulin@v0.1
+      uses: Philipp1709/tarpaulin-action@v2
       with:
         args: --ignore-tests --out Html
     
